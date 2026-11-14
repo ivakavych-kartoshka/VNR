@@ -1,5 +1,23 @@
 const STORAGE_KEY = 'vnr202_progress_v1';
 const BANK = window.QUESTION_BANK || [];
+const TOPICS = [...new Set(BANK.map(q => q.topic || 'Khác'))].sort();
+
+function populateTopicSelects() {
+  ['study-topic', 'quiz-topic', 'browse-topic'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const cur = sel.value || 'all';
+    sel.innerHTML = '<option value="all">Tất cả chủ đề</option>';
+    TOPICS.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t;
+      opt.textContent = t;
+      sel.appendChild(opt);
+    });
+    if ([...sel.options].some(o => o.value === cur)) sel.value = cur;
+  });
+}
+populateTopicSelects();
 
 function loadProgress() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch (e) { return {}; }
@@ -47,7 +65,9 @@ const studyNext = document.getElementById('study-next');
 
 function buildStudyQueue(mode) {
   const now = Date.now();
+  const topic = document.getElementById('study-topic').value;
   let items = BANK.map(q => ({ q, p: getCard(q.id) }));
+  if (topic !== 'all') items = items.filter(it => it.q.topic === topic);
   if (mode === 'due') items = items.filter(it => (it.p.due || 0) <= now);
   else if (mode === 'wrong') items = items.filter(it => it.p.lastWrong);
   items = shuffle(items);
@@ -238,9 +258,11 @@ function renderQuizCard() {
 
 document.getElementById('quiz-start').addEventListener('click', () => {
   const countSel = document.getElementById('quiz-count').value;
-  let n = countSel === 'all' ? BANK.length : parseInt(countSel);
-  n = Math.min(n, BANK.length);
-  quizState.queue = shuffle(BANK).slice(0, n);
+  const topic = document.getElementById('quiz-topic').value;
+  const pool = topic === 'all' ? BANK : BANK.filter(q => q.topic === topic);
+  let n = countSel === 'all' ? pool.length : parseInt(countSel);
+  n = Math.min(n, pool.length);
+  quizState.queue = shuffle(pool).slice(0, n);
   quizState.index = 0;
   quizState.answers = {};
   document.getElementById('quiz-result').classList.add('hidden');
@@ -323,9 +345,11 @@ const browseCount = document.getElementById('browse-count');
 
 function renderBrowse(filter) {
   const f = (filter || '').toLowerCase();
+  const topic = document.getElementById('browse-topic').value;
   const items = BANK.filter(q =>
-    q.question.toLowerCase().includes(f) || String(q.id).includes(f) ||
-    q.choices.some(c => c.text.toLowerCase().includes(f))
+    (topic === 'all' || q.topic === topic) &&
+    (q.question.toLowerCase().includes(f) || String(q.id).includes(f) ||
+    q.choices.some(c => c.text.toLowerCase().includes(f)))
   );
   browseCount.textContent = `${items.length} câu`;
   browseList.innerHTML = '';
@@ -333,11 +357,12 @@ function renderBrowse(filter) {
     const div = document.createElement('div');
     div.className = 'browse-item';
     div.innerHTML = `<div class="q">${q.id}. ${q.question}</div>
-      <div class="a">Đáp án: ${q.answer.split('').join(', ')}</div>`;
+      <div class="a">Chủ đề: ${q.topic} | Đáp án: ${q.answer.split('').join(', ')}</div>`;
     browseList.appendChild(div);
   });
 }
 browseSearch.addEventListener('input', () => renderBrowse(browseSearch.value));
+document.getElementById('browse-topic').addEventListener('change', () => renderBrowse(browseSearch.value));
 renderBrowse('');
 
 // ---------- Stats ----------
