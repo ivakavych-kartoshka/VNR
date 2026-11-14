@@ -1,0 +1,23 @@
+# source/extraction files
+*.pdf
+*.txt
+*.py
+*.json
+preview*.txt
+blocks.txt
+left_preview.txt
+right_preview.txt
+missing*.txt
+q*.txt
+p*.txt
+chk.txt
+inspect*.py
+parsed*.json
+columns.json
+# keep web app files
+!index.html
+!style.css
+!app.js
+!questions.js
+!.gitignore
+!.nojekyll
