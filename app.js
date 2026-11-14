@@ -90,6 +90,8 @@ function renderStudyCard() {
   const p = studyState.current.p;
   studyCounter.textContent = `Câu ${studyState.index + 1}/${studyState.queue.length}`;
   studyBox.textContent = `Box ${p.box || 0}`;
+  document.getElementById('study-progress').style.width = `${Math.round((studyState.index / studyState.queue.length) * 100)}%`;
+  document.getElementById('study-topic-label').textContent = q.topic;
   studyQuestion.textContent = q.question;
   studyChoices.innerHTML = '';
   q.choices.forEach(c => {
@@ -223,6 +225,8 @@ function renderQuizCard() {
   const q = quizState.queue[quizState.index];
   quizState.selected = quizState.answers[q.id] ? new Set(quizState.answers[q.id]) : new Set();
   document.getElementById('quiz-counter').textContent = `Câu ${quizState.index + 1}/${quizState.queue.length}`;
+  document.getElementById('quiz-progress').style.width = `${Math.round((quizState.index / quizState.queue.length) * 100)}%`;
+  document.getElementById('quiz-topic-label').textContent = q.topic;
   document.getElementById('quiz-question').textContent = q.question;
   const container = document.getElementById('quiz-choices');
   container.innerHTML = '';
@@ -385,14 +389,21 @@ function renderStats() {
     if ((pp.due || 0) <= Date.now()) due++;
   });
   const acc = attempts ? Math.round(correct / attempts * 100) : 0;
+  const boxBars = boxes.map((v, i) => `
+    <div class="stats-bar">
+      <div class="label">Box ${i}</div>
+      <div class="bar"><div class="fill" style="width:${Math.round(v / BANK.length * 100)}%"></div></div>
+      <div class="label">${v}</div>
+    </div>`).join('');
   body.innerHTML = `
-    <p>Tổng số câu: ${BANK.length}</p>
-    <p>Đã học (có tiến độ): ${studied}</p>
-    <p>Đến hạn ôn: ${due}</p>
-    <p>Thành thạo (box ≥4): ${mastered}</p>
-    <p>Tổng lượt trả lời: ${attempts}</p>
-    <p>Số câu đúng: ${correct} (${acc}%)</p>
-    <p>Phân bố box: ${boxes.map((v, i) => `B${i}:${v}`).join(' | ')}</p>
+    <p><strong>Tổng số câu:</strong> ${BANK.length}</p>
+    <p><strong>Đã học (có tiến độ):</strong> ${studied}</p>
+    <p><strong>Đến hạn ôn:</strong> ${due}</p>
+    <p><strong>Thành thạo (box ≥4):</strong> ${mastered}</p>
+    <p><strong>Tổng lượt trả lời:</strong> ${attempts}</p>
+    <p><strong>Số câu đúng:</strong> ${correct} (${acc}%)</p>
+    <h3>Phân bố box</h3>
+    ${boxBars}
   `;
 }
 
