@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VNR202 - Ôn tập & Kiểm tra</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="app-header">
+  <h1>VNR202 - Ôn tập & Kiểm tra</h1>
+  <nav class="tabs">
+    <button class="tab active" data-tab="study">Học (SRS)</button>
+    <button class="tab" data-tab="quiz">Kiểm tra</button>
+    <button class="tab" data-tab="browse">Duyệt câu hỏi</button>
+    <button class="tab" data-tab="stats">Thống kê</button>
+  </nav>
+</header>
+
+<main>
+  <!-- STUDY -->
+  <section id="tab-study" class="tab-panel active">
+    <div class="card controls">
+      <div class="row">
+        <label>Chế độ:</label>
+        <select id="study-mode">
+          <option value="due">Thẻ đến hạn</option>
+          <option value="all">Ôn tất cả</option>
+          <option value="wrong">Câu sai gần đây</option>
+        </select>
+        <button id="study-start" class="primary">Bắt đầu</button>
+        <button id="study-reset" class="danger">Reset tiến độ</button>
+      </div>
+      <div class="row small">
+        <span id="study-info">Chưa bắt đầu</span>
+      </div>
+    </div>
+
+    <div id="study-card" class="card question-card hidden">
+      <div class="q-meta">
+        <span id="study-counter"></span>
+        <span id="study-box"></span>
+      </div>
+      <div id="study-question" class="question-text"></div>
+      <div id="study-choices" class="choices"></div>
+      <div class="actions">
+        <button id="study-check" class="primary">Kiểm tra đáp án</button>
+      </div>
+      <div id="study-feedback" class="feedback hidden"></div>
+      <div id="study-rating" class="rating hidden">
+        <span>Đánh giá độ khó:</span>
+        <button data-q="0" class="rate again">Quên</button>
+        <button data-q="2" class="rate hard">Khó</button>
+        <button data-q="4" class="rate good">Tốt</button>
+        <button data-q="5" class="rate easy">Dễ</button>
+      </div>
+      <div class="actions">
+        <button id="study-next" class="secondary hidden">Câu tiếp theo</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="tab-quiz" class="tab-panel">
+    <div class="card controls">
+      <div class="row">
+        <label>Số câu:</label>
+        <select id="quiz-count">
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+          <option value="all">Tất cả</option>
+        </select>
+        <label><input type="checkbox" id="quiz-timer"> Hẹn giờ 15 phút</label>
+        <button id="quiz-start" class="primary">Bắt đầu kiểm tra</button>
+      </div>
+    </div>
+
+    <div id="quiz-card" class="card question-card hidden">
+      <div class="q-meta">
+        <span id="quiz-counter"></span>
+        <span id="quiz-time"></span>
+      </div>
+      <div id="quiz-question" class="question-text"></div>
+      <div id="quiz-choices" class="choices"></div>
+      <div class="actions">
+        <button id="quiz-next" class="primary">Câu tiếp theo</button>
+      </div>
+    </div>
+
+    <div id="quiz-result" class="card hidden">
+      <h2>Kết quả</h2>
+      <p id="quiz-score"></p>
+      <div id="quiz-review"></div>
+      <button id="quiz-restart" class="secondary">Làm lại</button>
+    </div>
+  </section>
+
+  <!-- BROWSE -->
+  <section id="tab-browse" class="tab-panel">
+    <div class="card controls">
+      <input id="browse-search" type="text" placeholder="Tìm kiếm câu hỏi...">
+      <span id="browse-count"></span>
+    </div>
+    <div id="browse-list" class="browse-list"></div>
+  </section>
+
+  <!-- STATS -->
+  <section id="tab-stats" class="tab-panel">
+    <div class="card">
+      <h2>Thống kê</h2>
+      <div id="stats-body"></div>
+      <button id="export-progress" class="secondary">Xuất tiến độ (JSON)</button>
+      <button id="import-progress" class="secondary">Nhập tiến độ</button>
+      <input type="file" id="import-file" accept="application/json" hidden>
+    </div>
+  </section>
+</main>
+
+<script src="questions.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
