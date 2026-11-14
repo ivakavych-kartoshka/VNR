@@ -142,7 +142,7 @@ document.getElementById('study-start').addEventListener('click', () => {
   renderStudyCard();
 });
 
-document.getElementById('study-check').addEventListener('click', () => {
+function checkStudy() {
   if (studyState.checked || !studyState.current) return;
   studyState.checked = true;
   const q = studyState.current.q;
@@ -173,7 +173,8 @@ document.getElementById('study-check').addEventListener('click', () => {
   studyFeedback.classList.remove('hidden');
   studyRating.classList.remove('hidden');
   studyNext.classList.add('hidden');
-});
+}
+document.getElementById('study-check').addEventListener('click', checkStudy);
 
 document.querySelectorAll('#study-rating .rate').forEach(btn => {
   btn.addEventListener('click', () => {
