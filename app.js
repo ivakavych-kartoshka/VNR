@@ -108,10 +108,7 @@ function renderStudyCard() {
         studyState.selected.clear();
         if (inp.checked) studyState.selected.add(c.key);
       }
-      const correctSet = new Set(q.answer.split(''));
-      if (!q.multiple || studyState.selected.size === correctSet.size) {
-        checkStudy();
-      }
+      // manual check via button
     });
     div.addEventListener('click', (e) => {
       if (studyState.checked) return;
