@@ -17,7 +17,27 @@ function populateTopicSelects() {
     if ([...sel.options].some(o => o.value === cur)) sel.value = cur;
   });
 }
+function populateSetSelects() {
+  const total = BANK.length;
+  const sets = Math.ceil(total / 10);
+  ['study-set', 'quiz-set'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const cur = sel.value || 'all';
+    sel.innerHTML = '<option value="all">Tất cả</option>';
+    for (let i = 1; i <= sets; i++) {
+      const start = (i - 1) * 10 + 1;
+      const end = Math.min(i * 10, total);
+      const opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = `Bộ đề ${i} (câu ${start}-${end})`;
+      sel.appendChild(opt);
+    }
+    if ([...sel.options].some(o => o.value === cur)) sel.value = cur;
+  });
+}
 populateTopicSelects();
+populateSetSelects();
 
 function loadProgress() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch (e) { return {}; }
@@ -66,12 +86,21 @@ const studyNext = document.getElementById('study-next');
 function buildStudyQueue(mode) {
   const now = Date.now();
   const topic = document.getElementById('study-topic').value;
+  const setSel = document.getElementById('study-set').value;
   const countSel = document.getElementById('study-count').value;
   let items = BANK.map(q => ({ q, p: getCard(q.id) }));
+  if (setSel !== 'all') {
+    const si = parseInt(setSel);
+    items = items.filter(it => it.q.id > (si-1)*10 && it.q.id <= si*10);
+  }
   if (topic !== 'all') items = items.filter(it => it.q.topic === topic);
   if (mode === 'due') items = items.filter(it => (it.p.due || 0) <= now);
   else if (mode === 'wrong') items = items.filter(it => it.p.lastWrong);
   if (items.length === 0) items = BANK.map(q => ({ q, p: getCard(q.id) }));
+  if (setSel !== 'all') {
+    const si = parseInt(setSel);
+    items = items.filter(it => it.q.id > (si-1)*10 && it.q.id <= si*10);
+  }
   if (topic !== 'all') items = items.filter(it => it.q.topic === topic);
   items = shuffle(items);
   let n = countSel === 'all' ? items.length : parseInt(countSel);
@@ -271,7 +300,13 @@ function renderQuizCard() {
 document.getElementById('quiz-start').addEventListener('click', () => {
   const countSel = document.getElementById('quiz-count').value;
   const topic = document.getElementById('quiz-topic').value;
-  const pool = topic === 'all' ? BANK : BANK.filter(q => q.topic === topic);
+  const setSel = document.getElementById('quiz-set').value;
+  let pool = BANK;
+  if (setSel !== 'all') {
+    const si = parseInt(setSel);
+    pool = pool.filter(q => q.id > (si-1)*10 && q.id <= si*10);
+  }
+  if (topic !== 'all') pool = pool.filter(q => q.topic === topic);
   let n = countSel === 'all' ? pool.length : parseInt(countSel);
   n = Math.min(n, pool.length);
   quizState.queue = shuffle(pool).slice(0, n);
