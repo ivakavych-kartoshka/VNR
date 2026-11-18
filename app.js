@@ -38,6 +38,25 @@ function populateSetSelects() {
 }
 populateTopicSelects();
 populateSetSelects();
+function populateSetGrid() {
+  const grid = document.getElementById('study-set-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const sets = Math.ceil(BANK.length / 10);
+  for (let i = 1; i <= sets; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'set-btn';
+    btn.textContent = i;
+    btn.addEventListener('click', () => {
+      document.getElementById('study-set').value = String(i);
+      document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('study-start').click();
+    });
+    grid.appendChild(btn);
+  }
+}
+populateSetGrid();
 
 function loadProgress() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch (e) { return {}; }
