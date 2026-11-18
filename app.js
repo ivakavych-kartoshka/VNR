@@ -126,6 +126,9 @@ function renderStudyCard() {
   studyCounter.textContent = `Câu ${studyState.index + 1}/${studyState.queue.length}`;
   studyBox.textContent = `Box ${p.box || 0}`;
   document.getElementById('study-progress').style.width = `${Math.round((studyState.index / studyState.queue.length) * 100)}%`;
+  const ss = document.getElementById('study-set').value;
+  const setLabel = ss === 'all' ? 'Tất cả bộ đề' : `Bộ đề ${ss} (câu ${(ss-1)*10+1}-${Math.min(ss*10, BANK.length)})`;
+  document.getElementById('study-set-label').textContent = setLabel;
   document.getElementById('study-topic-label').textContent = q.topic;
   studyQuestion.textContent = q.question;
   studyChoices.innerHTML = '';
@@ -263,6 +266,9 @@ function renderQuizCard() {
   quizState.selected = quizState.answers[q.id] ? new Set(quizState.answers[q.id]) : new Set();
   document.getElementById('quiz-counter').textContent = `Câu ${quizState.index + 1}/${quizState.queue.length}`;
   document.getElementById('quiz-progress').style.width = `${Math.round((quizState.index / quizState.queue.length) * 100)}%`;
+  const qs = document.getElementById('quiz-set').value;
+  const qsetLabel = qs === 'all' ? 'Tất cả bộ đề' : `Bộ đề ${qs} (câu ${(qs-1)*10+1}-${Math.min(qs*10, BANK.length)})`;
+  document.getElementById('quiz-set-label').textContent = qsetLabel;
   document.getElementById('quiz-topic-label').textContent = q.topic;
   document.getElementById('quiz-question').textContent = q.question;
   const container = document.getElementById('quiz-choices');

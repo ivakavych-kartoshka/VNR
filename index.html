@@ -37,7 +37,10 @@
           <option value="all">Tất cả</option>
         </select>
         <label>Bộ đề (10 câu):</label>
-        <select id="study-set"><option value="all">Tất cả</option></select>
+        <select id="study-set">
+          <option value="all">Tất cả</option>
+          <option value="1" selected>Bộ đề 1 (câu 1-10)</option>
+        </select>
         <label>Chủ đề:</label>
         <select id="study-topic"><option value="all">Tất cả chủ đề</option></select>
         <button id="study-start" class="primary">Bắt đầu</button>
@@ -54,6 +57,7 @@
         <span id="study-box"></span>
       </div>
       <div class="progress"><div id="study-progress" class="progress-bar"></div></div>
+      <div id="study-set-label" class="topic-chip"></div>
       <div id="study-topic-label" class="topic-chip"></div>
       <div id="study-question" class="question-text"></div>
       <div id="study-choices" class="choices"></div>
@@ -100,6 +104,7 @@
         <span id="quiz-time"></span>
       </div>
       <div class="progress"><div id="quiz-progress" class="progress-bar"></div></div>
+      <div id="quiz-set-label" class="topic-chip"></div>
       <div id="quiz-topic-label" class="topic-chip"></div>
       <div id="quiz-question" class="question-text"></div>
       <div id="quiz-choices" class="choices"></div>
