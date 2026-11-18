@@ -66,11 +66,17 @@ const studyNext = document.getElementById('study-next');
 function buildStudyQueue(mode) {
   const now = Date.now();
   const topic = document.getElementById('study-topic').value;
+  const countSel = document.getElementById('study-count').value;
   let items = BANK.map(q => ({ q, p: getCard(q.id) }));
   if (topic !== 'all') items = items.filter(it => it.q.topic === topic);
   if (mode === 'due') items = items.filter(it => (it.p.due || 0) <= now);
   else if (mode === 'wrong') items = items.filter(it => it.p.lastWrong);
+  if (items.length === 0) items = BANK.map(q => ({ q, p: getCard(q.id) }));
+  if (topic !== 'all') items = items.filter(it => it.q.topic === topic);
   items = shuffle(items);
+  let n = countSel === 'all' ? items.length : parseInt(countSel);
+  n = Math.min(n, items.length);
+  items = items.slice(0, n);
   if (items.length === 0 && mode === 'due') {
     items = shuffle(BANK.map(q => ({ q, p: getCard(q.id) }))).slice(0, 20);
   }
